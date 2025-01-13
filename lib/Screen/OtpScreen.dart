@@ -27,7 +27,7 @@
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('OTP Verified: $otp')),
         );
-        Get.offAll(() => HomeScreen());
+        Get.offAll(() => HomePage());
       }
       else {
         ScaffoldMessenger.of(context).showSnackBar(

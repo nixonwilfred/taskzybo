@@ -24,7 +24,8 @@ class HomePage extends StatelessWidget {
           ProfileScreen(), // Profile Screen
         ],
       )),
-      bottomNavigationBar: Obx(() => BottomNavigationBar(
+      bottomNavigationBar: Obx(()
+      => BottomNavigationBar(
         currentIndex: controller.selectedIndex.value, // Highlight the selected tab
         onTap: controller.changeIndex, // Update index on tap
         items: [
