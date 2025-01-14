@@ -46,6 +46,7 @@
     @override
     Widget build(BuildContext context) {
       final screenWidth = MediaQuery.of(context).size.width;
+      final screenHeight=MediaQuery.of(context).size.height;
 
       return Scaffold(backgroundColor: Colors.white,
         appBar: AppBar(
@@ -69,18 +70,23 @@
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: screenHeight*0.03),
               Text(
                 "Enter the OTP sent to +91-${widget.phoneNumber}",
                 style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.grey[700]),
               ),
-              SizedBox(height: 20),
+              SizedBox(height:screenHeight*0.08),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(4, (index) {
                   return SizedBox(
                     width: screenWidth * 0.15,
                     child: TextField(
+                      onChanged: (value){
+                        if (value.length == 1 && index < 3) {
+                          FocusScope.of(context).nextFocus();
+                        }
+                      },
                       controller: otpControllers[index],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
@@ -93,20 +99,23 @@
                   );
                 }),
               ),
-              SizedBox(height: 10),
+              SizedBox(height:  screenHeight*0.07),
               GestureDetector(
                 onTap: resendOtp,
-                child: Text(
-                  "Don't receive code? Re-send",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.04,
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
+                child: Center(
+                  child: Text(
+                    "Don't receive code? Re-send",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.037,
+                      color: Colors.grey,
+                      decoration: TextDecoration.underline,
+                    ),
+
                   ),
                 ),
               ),
               SizedBox(
-                height: 30,
+                height: screenHeight*0.03,
               ),
 
               SizedBox(

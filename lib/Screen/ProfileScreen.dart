@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
     // Retrieve user data
     final userData = UserData();
 
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
