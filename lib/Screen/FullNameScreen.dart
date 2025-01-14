@@ -80,7 +80,7 @@ class FullNameScreen extends StatelessWidget {
             TextField(
               controller: nameController,
               decoration: InputDecoration(
-                labelText: "Enter Full Name",
+                hintText: "Enter Full Name",
                 border: UnderlineInputBorder(),
                 labelStyle: TextStyle(
                   fontSize: screenWidth * 0.041,

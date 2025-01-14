@@ -1,9 +1,12 @@
 class UserData {
-  static final UserData _instance = UserData._internal();
-  factory UserData() => _instance;
+  static final UserData _singleton = UserData._internal();
 
-  String name = '';
-  String phone = '';
+  factory UserData() {
+    return _singleton;
+  }
 
   UserData._internal();
+
+  String name = "";
+  String phone = "";
 }

@@ -14,3 +14,4 @@ Future<List<Product>> fetchProducts() async {
     throw Exception('Failed to load products');
   }
 }
+
