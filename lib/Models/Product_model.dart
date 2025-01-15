@@ -16,6 +16,7 @@ class Product {
   final double salePrice;
   final String featuredImage;
   final List<Addon> addons;
+  bool inWishlist;
 
   Product({
     required this.id,
@@ -23,6 +24,7 @@ class Product {
     required this.salePrice,
     required this.featuredImage,
     required this.addons,
+    this.inWishlist = false,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,7 @@ class Product {
           .map((addon) => Addon.fromJson(addon))
           .toList()
           : [],
+      inWishlist: json['in_wishlist'] ?? false,
     );
   }
 }

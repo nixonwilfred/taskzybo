@@ -2,16 +2,10 @@
   import 'package:get/get.dart';
   import 'package:taskzybo/Screen/HomePage.dart';
 
-
-
-
-
   class OtpScreen extends StatefulWidget {
     final String phoneNumber;
     final String otp;
-
     OtpScreen({required this.phoneNumber,required this.otp});
-
     @override
     _OtpScreenState createState() => _OtpScreenState();
   }
@@ -24,9 +18,7 @@
       if ((otp.length == 4)& (otp==widget.otp)) {
 
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('OTP Verified: $otp')),
-        );
+
         Get.offAll(() => HomePage());
       }
       else {
@@ -37,10 +29,9 @@
     }
 
     void resendOtp() {
-      // Implement your Resend OTP logic here
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("OTP Resent ${widget.otp}")),
-      );
+      Get.snackbar("Otp resent", "${widget.otp}");
+
+
     }
 
     @override
@@ -110,7 +101,6 @@
                       color: Colors.grey,
                       decoration: TextDecoration.underline,
                     ),
-
                   ),
                 ),
               ),

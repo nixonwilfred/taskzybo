@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskzybo/Screen/FullNameScreen.dart';
 import '../Services/Api_services.dart';
+import '../Utilities/tokenStorage.dart';
 import 'OtpScreen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -15,40 +16,42 @@ class LoginScreen extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("You have not entered a valid 10-digit phone number.")),
       );
-      return; // Stop further execution for invalid phone numbers
+      return;
     }
 
     try {
       // Step 2: Call Verify User API
       final response = await verifyUser(phoneNumber);
+
       if (response != null) {
         final otp = response['otp'];
         final isUser = response['user'];
 
-        // Step 3: Navigate based on user type
         if (isUser) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("OTP sent: $otp")),
-          );
-          // Existing user: Navigate to OTP screen
-          Get.to(() => OtpScreen(phoneNumber: phoneNumber, otp: otp));
+          // Step 3: Save Token for Existing User
+          final token = response['token']['access'];
+          await TokenStorage.saveToken(token); // Save the token securely
+
+          Get.snackbar("Enter otp", "$otp");
+          Get.offAll(() => OtpScreen(phoneNumber: phoneNumber, otp: otp));
         } else {
-          // New user: Navigate to OTP screen for further registration
-          Get.to(() =>FullNameScreen(phoneNumber: phoneNumber,));
+
+          Get.to(() => FullNameScreen(phoneNumber: phoneNumber));
         }
       } else {
-        // Step 4: Handle null response from API
+        // Handle null response from API
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to fetch data. Please try again.")),
         );
       }
     } catch (e) {
-      // Step 5: Handle exceptions
+      // Handle exceptions
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("An error occurred: $e")),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +77,7 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: screenHeight * 0.02),
               Text(
-                "Let's Connect with Lorem Ipsum..!",
+                "Let's Connect with Demo!",
                 style: TextStyle(
                   fontSize: screenWidth * 0.04,
                   color: Colors.grey[700],

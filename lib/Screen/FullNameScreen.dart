@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../Models/userdata_model.dart';
+import '../Utilities/tokenStorage.dart';
 import 'HomePage.dart';
-
 
 class FullNameScreen extends StatelessWidget {
   final String phoneNumber;
@@ -35,7 +35,11 @@ class FullNameScreen extends StatelessWidget {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // Save data in UserData singleton
+        // Save token securely
+        final token = data['token']['access'];
+        await TokenStorage.saveToken(token);
+
+        // Save user data in UserData singleton
         UserData().name = fullName;
         UserData().phone = phoneNumber;
 

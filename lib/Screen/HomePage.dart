@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../Models/Banner_model.dart';
 import '../Services/fetchBanners.dart';
 import '../Models/Product_model.dart';
 import '../Services/fetchProducts.dart';
 import '../Controllers/HomeController.dart';
 import 'ProfileScreen.dart';
+
 
 class HomePage extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
@@ -19,8 +19,10 @@ class HomePage extends StatelessWidget {
       body: Obx(() => IndexedStack(
         index: controller.selectedIndex.value,
         children: [
-          HomeScreen(),
-          WishlistScreen(),
+          HomeScreen(controller: controller,),
+          WishlistScreen(
+              controller:controller
+          ),
           ProfileScreen(),
         ],
       )),
@@ -38,6 +40,8 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
+  final HomeController controller;
+  HomeScreen({required this.controller});
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -45,7 +49,7 @@ class HomeScreen extends StatelessWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        // Refresh logic (e.g., fetch data again)
+        await controller.loadProducts();
       },
       child: SingleChildScrollView(
         child: Column(
@@ -151,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                       final imageUrl = getImageUrl(product);
 
                       return Card(
-                        elevation: 4,
+                        elevation: 3,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(screenWidth * 0.04),
                         ),
@@ -164,13 +168,13 @@ class HomeScreen extends StatelessWidget {
                                     imageUrl: imageUrl,
                                     placeholder: (context, url) => CircularProgressIndicator(),
                                     errorWidget: (context, url, error) => Icon(Icons.error),
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.all(screenWidth * 0.02),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
                                         product.name,
@@ -186,13 +190,16 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                             Positioned(
-                              top: 8,
+                              bottom: 8,
                               right: 8,
                               child: IconButton(
-                                icon: Icon(Icons.favorite_border),
-                                onPressed: () {
-                                  // Add to wishlist functionality
-                                },
+                                icon: Icon(product.inWishlist ? Icons.favorite : Icons.favorite_border,),
+                                color: product.inWishlist ? Colors.red : Colors.grey,
+                                onPressed: () async {
+
+                                await  controller.manageWishlist(product); // Use the updated controller method name
+                                  },
+
                               ),
                             ),
                           ],
@@ -234,14 +241,31 @@ class HomeScreen extends StatelessWidget {
 }
 
 class WishlistScreen extends StatelessWidget {
+  final HomeController controller;
+  WishlistScreen({required this.controller});
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return Center(
-      child: Text(
-        "Wishlist Screen",
-        style: TextStyle(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold),
-      ),
-    );
+    return Obx((){
+      if (controller.wishlist.isEmpty) {
+        return Center(child: Text("Your wishlist is empty."));
+      }
+      return ListView.builder(
+        itemCount: controller.wishlist.length,
+        itemBuilder: (context, index) {
+          final product = controller.wishlist[index];
+          return ListTile(
+            title: Text(product.name),
+            subtitle: Text('₹${product.salePrice}'),
+            trailing: IconButton(
+              icon: Icon(Icons.favorite, color: Colors.red),
+              onPressed: () async {
+                controller.manageWishlist(product);
+              },
+          ),
+          );
+        },
+      );
+    });
   }
 }
+
